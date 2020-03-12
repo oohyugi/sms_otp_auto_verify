@@ -6,16 +6,16 @@ A new Flutter plugin to provide SMS auto fill and List Textfield OTP Code.
 <img width="220px" alt="Example App " src="https://raw.githubusercontent.com/oohyugi/sms_otp_auto_verify/master/screenshots/img.jpg"/>
 
 ## Getting Started
-Import package
+### Import package
 ```dart
 import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
 ```
-Get Signature Code
+### Get Signature Code
 ```dart
   String signature = await SmsRetrieved.getAppSignature();
 ```
 ### Add Widget
-codeLength must equals with your Sms OTP length
+codeLength must equals with Sms OTP Code length
 
 ```dart
 OtpListTextField(
@@ -28,7 +28,7 @@ OtpListTextField(
                 )
 ```
 
-Listen result from OtpListTextField
+### Listen result from OtpListTextField
 ```dart
 _onOtpCallBack(String otpCode, bool isAutofill) {
     setState(() {
@@ -47,7 +47,7 @@ _onOtpCallBack(String otpCode, bool isAutofill) {
   }
 ```
 
-Example Sms
+### Example Sms
 ```html
 <#> ExampleApp: Your code is 123456
    r64Iw/6mD1D
