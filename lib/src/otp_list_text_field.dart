@@ -58,7 +58,7 @@ class _OtpListTextFieldState extends State<OtpListTextField> {
   @override
   void initState() {
     super.initState();
-    _getSignatureCode();
+
     _setDefaultTextFieldData();
 
     _startListeningOtpCode();
@@ -105,11 +105,7 @@ class _OtpListTextFieldState extends State<OtpListTextField> {
     }
   }
 
-  /// get signature code
-  _getSignatureCode() async {
-    String signature = await SmsRetrieved.getAppSignature();
-    print("signature $signature");
-  }
+
 
   /// get number from message ex: your code : 45678 blablabla blabla
   getCode(String sms) {

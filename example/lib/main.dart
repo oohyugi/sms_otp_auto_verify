@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
-import 'package:sms_otp_auto_verify_example/second_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -20,8 +19,14 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    _getSignatureCode();
   }
 
+  /// get signature code
+  _getSignatureCode() async {
+    String signature = await SmsRetrieved.getAppSignature();
+    print("signature $signature");
+  }
   _onSubmitOtp() {
     setState(() {
       _isLoadingButton = !_isLoadingButton;
