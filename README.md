@@ -49,7 +49,7 @@ _onOtpCallBack(String otpCode, bool isAutofill) {
 
 ### Example Sms
 ```html
-<#> ExampleApp: Your code is 123456
+<#> ExampleApp: Your code is 5664
    r64Iw/6mD1D
 ```
 
