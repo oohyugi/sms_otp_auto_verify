@@ -24,7 +24,9 @@ class OtpListTextField extends StatefulWidget {
       this.borderStyle,
       this.filled = false,
       this.filledColor = Colors.grey,
-      this.autoFill, this.codeLength = 5, this.textStyle = const TextStyle(fontSize: 16)})
+      this.autoFill,
+      this.codeLength = 5,
+      this.textStyle = const TextStyle(fontSize: 16)})
       : super(key: key);
 
   @override
@@ -65,7 +67,6 @@ class _OtpListTextFieldState extends State<OtpListTextField> {
   }
 
   void _setDefaultTextFieldData() {
-
     for (int i = 0; i < widget.codeLength; i++) {
       mListOtpData.add(OtpDefaultData(null));
       focusNode.add(new FocusNode());
@@ -104,8 +105,6 @@ class _OtpListTextFieldState extends State<OtpListTextField> {
       }
     }
   }
-
-
 
   /// get number from message ex: your code : 45678 blablabla blabla
   getCode(String sms) {
@@ -161,7 +160,8 @@ class _OtpListTextFieldState extends State<OtpListTextField> {
               return Container(
                 width: widget.boxSize,
                 height: widget.boxSize,
-                margin: EdgeInsets.only(right: i != mListOtpData.length-1 ? 16 : 0),
+                margin: EdgeInsets.only(
+                    right: i != mListOtpData.length - 1 ? 16 : 0),
                 child: textFieldFill(
                   focusNode: focusNode[i],
                   textEditingController: textController[i],
@@ -186,7 +186,6 @@ class _OtpListTextFieldState extends State<OtpListTextField> {
                         _nextFocus = 1;
                       }
                     }
-
                   },
                 ),
               );
@@ -209,7 +208,7 @@ class _OtpListTextFieldState extends State<OtpListTextField> {
         textAlign: TextAlign.center,
         style: widget.textStyle,
         decoration: InputDecoration(
-          labelStyle: TextStyle(fontSize: 32),
+            labelStyle: TextStyle(fontSize: 32),
             filled: widget.filled,
             border: border,
             fillColor: widget.filledColor,
