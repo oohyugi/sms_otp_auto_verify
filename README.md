@@ -3,10 +3,9 @@
 A new Flutter plugin to provide SMS auto fill and Textfield for OTP Code.
 for auto fill, it's only work in android.
 
-```html
+
 <img width="220px" alt="Example App " src="https://raw.githubusercontent.com/oohyugi/sms_auto_verify/master/screenshots/img.jpg"/>
 
-```
 ## Getting Started
 Import package
 ```dart
@@ -51,8 +50,8 @@ _onOtpCallBack(String otpCode, bool isAutofill) {
 
 Example Sms
 ```html
-<p><#> ExampleApp: Your code is 123456
-   r64Iw/6mD1D</p>
+<#> ExampleApp: Your code is 123456
+   r64Iw/6mD1D
 ```
 
 
