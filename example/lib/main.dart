@@ -1,0 +1,119 @@
+import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
+import 'package:sms_otp_auto_verify_example/second_page.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  int _otpCodeLength = 4;
+  bool _isLoadingButton = false;
+  bool _enableButton = false;
+  String _otpCode ="";
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  _onSubmitOtp() {
+    setState(() {
+      _isLoadingButton = !_isLoadingButton;
+      _verifyOtpCode();
+    });
+  }
+
+  _onOtpCallBack(String otpCode, bool isAutofill) {
+    setState(() {
+      this._otpCode = otpCode;
+      if (otpCode.length == _otpCodeLength && isAutofill) {
+        _enableButton = false;
+        _isLoadingButton = true;
+        _verifyOtpCode();
+      } else if (otpCode.length == _otpCodeLength && !isAutofill) {
+        _enableButton = true;
+        _isLoadingButton = false;
+      }else{
+        _enableButton = false;
+      }
+    });
+  }
+
+  _verifyOtpCode() {
+    FocusScope.of(context).requestFocus(new FocusNode());
+    Timer(Duration(milliseconds: 4000), () {
+      setState(() {
+        _isLoadingButton = false;
+        _enableButton =false;
+      });
+
+     _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Verification OTP Code $_otpCode Success")));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: const Text('Plugin example app'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                OtpListTextField(
+                  filled: true,
+                  filledColor: Colors.grey[100],
+                  codeLength: _otpCodeLength,
+                  boxSize: 48,
+                  onOtpCallback: (code, isAutofill) =>
+                      _onOtpCallBack(code, isAutofill),
+                ),
+                SizedBox(
+                  height: 32,
+                ),
+                Container(
+                  width: double.maxFinite,
+                  child: MaterialButton(
+                    onPressed: _enableButton ? _onSubmitOtp : null,
+                    child: _setUpButtonChild(),
+                    color: Colors.blue,
+                    disabledColor: Colors.blue[100],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _setUpButtonChild() {
+    if (_isLoadingButton) {
+      return Container(
+        width: 19,
+        height: 19,
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        ),
+      );
+    } else {
+      return Text(
+        "Verify",
+        style: TextStyle(color: Colors.white),
+      );
+    }
+  }
+}

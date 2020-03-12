@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/sms_otp_auto_verify.iml" filepath="$PROJECT_DIR$/sms_otp_auto_verify.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/sms_otp_auto_verify_android.iml" filepath="$PROJECT_DIR$/android/sms_otp_auto_verify_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/example/android/sms_otp_auto_verify_example_android.iml" filepath="$PROJECT_DIR$/example/android/sms_otp_auto_verify_example_android.iml" />
+    </modules>
+  </component>
+</project>
