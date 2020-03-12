@@ -1,10 +1,11 @@
 # sms_otp_auto_verify
 
-A new Flutter plugin to provide SMS auto fill and Textfield for OTP Code.
-for auto fill, it's only work in android.
+A new Flutter plugin to provide SMS auto fill and List Textfield OTP Code.
+
+for Auto fill, it's only work in android.
 
 
-<img width="220px" alt="Example App " src="https://raw.githubusercontent.com/oohyugi/sms_auto_verify/master/screenshots/img.jpg"/>
+<img width="220px" alt="Example App " src="https://raw.githubusercontent.com/oohyugi/sms_otp_auto_verify/master/screenshots/img.jpg"/>
 
 ## Getting Started
 Import package
