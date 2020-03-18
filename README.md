@@ -19,7 +19,7 @@ import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
 codeLength must equals with Sms OTP Code length
 
 ```dart
-OtpListTextField(
+TextFieldPin(
                   filled: true,
                   filledColor: Colors.grey[100],
                   codeLength: _otpCodeLength,
