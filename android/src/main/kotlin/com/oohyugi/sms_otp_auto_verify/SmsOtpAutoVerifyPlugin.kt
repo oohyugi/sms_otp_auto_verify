@@ -67,7 +67,6 @@ class SmsOtpAutoVerifyPlugin(private val activity: Activity) : MethodCallHandler
     }
 
     override fun onOtpReceived(message: String?) {
-        Log.e("sms", message)
 
         message?.let {
             if (!alreadyCalledSmsRetrieve) {

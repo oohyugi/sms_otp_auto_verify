@@ -5,7 +5,7 @@ import 'package:sms_otp_auto_verify/src/sms_retrieved.dart';
 
 ///your listData length must be equals otp code length.
 
-class OtpListTextField extends StatefulWidget {
+class TextFieldPin extends StatefulWidget {
   final Function(String, bool) onOtpCallback;
   final FocusNode focusNode;
   final Function() autoFill;
@@ -16,7 +16,7 @@ class OtpListTextField extends StatefulWidget {
   final filledColor;
   final TextStyle textStyle;
 
-  OtpListTextField(
+  TextFieldPin(
       {Key key,
       this.onOtpCallback,
       this.focusNode,
@@ -31,12 +31,12 @@ class OtpListTextField extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _OtpListTextFieldState();
+    return _TextFieldPinState();
   }
 }
 
-class _OtpListTextFieldState extends State<OtpListTextField> {
-  _OtpListTextFieldState();
+class _TextFieldPinState extends State<TextFieldPin> {
+  _TextFieldPinState();
 
   List<FocusNode> focusNode = List();
   List<TextEditingController> textController = List();

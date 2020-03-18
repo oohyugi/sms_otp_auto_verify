@@ -13,7 +13,7 @@ class _MyAppState extends State<MyApp> {
   int _otpCodeLength = 4;
   bool _isLoadingButton = false;
   bool _enableButton = false;
-  String _otpCode ="";
+  String _otpCode = "";
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -27,6 +27,7 @@ class _MyAppState extends State<MyApp> {
     String signature = await SmsRetrieved.getAppSignature();
     print("signature $signature");
   }
+
   _onSubmitOtp() {
     setState(() {
       _isLoadingButton = !_isLoadingButton;
@@ -44,7 +45,7 @@ class _MyAppState extends State<MyApp> {
       } else if (otpCode.length == _otpCodeLength && !isAutofill) {
         _enableButton = true;
         _isLoadingButton = false;
-      }else{
+      } else {
         _enableButton = false;
       }
     });
@@ -55,10 +56,11 @@ class _MyAppState extends State<MyApp> {
     Timer(Duration(milliseconds: 4000), () {
       setState(() {
         _isLoadingButton = false;
-        _enableButton =false;
+        _enableButton = false;
       });
 
-     _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Verification OTP Code $_otpCode Success")));
+      _scaffoldKey.currentState.showSnackBar(
+          SnackBar(content: Text("Verification OTP Code $_otpCode Success")));
     });
   }
 
@@ -77,11 +79,13 @@ class _MyAppState extends State<MyApp> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                OtpListTextField(
+                TextFieldPin(
                   filled: true,
-                  filledColor: Colors.grey[100],
+                  filledColor: Colors.grey,
                   codeLength: _otpCodeLength,
                   boxSize: 48,
+                  borderStyle: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(34)),
                   onOtpCallback: (code, isAutofill) =>
                       _onOtpCallBack(code, isAutofill),
                 ),
