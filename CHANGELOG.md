@@ -1,3 +1,7 @@
+## 1.2.1
+
+* Custom TextFromField
+
 ## 1.2.0
 
 * Change widget name

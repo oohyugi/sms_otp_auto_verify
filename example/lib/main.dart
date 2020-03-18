@@ -83,8 +83,11 @@ class _MyAppState extends State<MyApp> {
                   filled: true,
                   filledColor: Colors.grey,
                   codeLength: _otpCodeLength,
-                  boxSize: 48,
+                  boxSize: 46,
+                  filledAfterTextChange: false,
+                  textStyle: TextStyle(fontSize: 16),
                   borderStyle: OutlineInputBorder(
+                      borderSide: BorderSide.none,
                       borderRadius: BorderRadius.circular(34)),
                   onOtpCallback: (code, isAutofill) =>
                       _onOtpCallBack(code, isAutofill),

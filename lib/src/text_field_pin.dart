@@ -7,26 +7,28 @@ import 'package:sms_otp_auto_verify/src/sms_retrieved.dart';
 
 class TextFieldPin extends StatefulWidget {
   final Function(String, bool) onOtpCallback;
-  final FocusNode focusNode;
-  final Function() autoFill;
   final double boxSize;
   final InputBorder borderStyle;
   final bool filled;
   final int codeLength;
   final filledColor;
   final TextStyle textStyle;
+  final double margin;
+  final InputBorder borderStyeAfterTextChange;
+  final bool filledAfterTextChange;
 
   TextFieldPin(
       {Key key,
       this.onOtpCallback,
-      this.focusNode,
       this.boxSize = 46,
       this.borderStyle,
       this.filled = false,
       this.filledColor = Colors.grey,
-      this.autoFill,
       this.codeLength = 5,
-      this.textStyle = const TextStyle(fontSize: 16)})
+      this.textStyle,
+      this.margin = 16,
+      this.borderStyeAfterTextChange,
+      this.filledAfterTextChange = false})
       : super(key: key);
 
   @override
@@ -47,6 +49,7 @@ class _TextFieldPinState extends State<TextFieldPin> {
   String _smsCode = "";
   int _nextFocus = 1;
   String _result = "";
+  InputBorder _borderAfterTextChange;
 
   @override
   void dispose() {
@@ -64,6 +67,13 @@ class _TextFieldPinState extends State<TextFieldPin> {
     _setDefaultTextFieldData();
 
     _startListeningOtpCode();
+    if (widget.borderStyeAfterTextChange == null) {
+      _borderAfterTextChange = OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32),
+          borderSide: BorderSide(color: Colors.grey, width: 1));
+    } else {
+      _borderAfterTextChange = widget.borderStyeAfterTextChange;
+    }
   }
 
   void _setDefaultTextFieldData() {
@@ -138,6 +148,7 @@ class _TextFieldPinState extends State<TextFieldPin> {
   @override
   Widget build(BuildContext context) {
     InputBorder _border = widget.borderStyle;
+
     if (_border == null) {
       _border = OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
@@ -161,32 +172,35 @@ class _TextFieldPinState extends State<TextFieldPin> {
                 width: widget.boxSize,
                 height: widget.boxSize,
                 margin: EdgeInsets.only(
-                    right: i != mListOtpData.length - 1 ? 16 : 0),
-                child: textFieldFill(
-                  focusNode: focusNode[i],
-                  textEditingController: textController[i],
-                  border: _border,
-                  onTextChange: (value) {
-                    _otpNumberCallback(i, false);
+                    right: i != mListOtpData.length - 1 ? widget.margin : 0),
+                child: Center(
+                  child: textFieldFill(
+                    focusNode: focusNode[i],
+                    textEditingController: textController[i],
+                    border: _getBorder(i),
+                    isFilled: _isFilled(i),
+                    onTextChange: (value) {
+                      _otpNumberCallback(i, false);
 
-                    if (value.toString().length > 0) {
-                      if (_nextFocus != mListOtpData.length) {
-                        _nextFocus = i + 1;
-                        FocusScope.of(context)
-                            .requestFocus(focusNode[_nextFocus]);
+                      if (value.toString().length > 0) {
+                        if (_nextFocus != mListOtpData.length) {
+                          _nextFocus = i + 1;
+                          FocusScope.of(context)
+                              .requestFocus(focusNode[_nextFocus]);
+                        } else {
+                          _nextFocus = mListOtpData.length - 1;
+                        }
                       } else {
-                        _nextFocus = mListOtpData.length - 1;
+                        if (i >= 1) {
+                          _nextFocus = i - 1;
+                          FocusScope.of(context)
+                              .requestFocus(focusNode[_nextFocus]);
+                        } else {
+                          _nextFocus = 1;
+                        }
                       }
-                    } else {
-                      if (i >= 1) {
-                        _nextFocus = i - 1;
-                        FocusScope.of(context)
-                            .requestFocus(focusNode[_nextFocus]);
-                      } else {
-                        _nextFocus = 1;
-                      }
-                    }
-                  },
+                    },
+                  ),
                 ),
               );
             }),
@@ -194,32 +208,49 @@ class _TextFieldPinState extends State<TextFieldPin> {
     );
   }
 
+  InputBorder _getBorder(int i) {
+    return textController[i].text.length >= 1
+        ? _borderAfterTextChange
+        : widget.borderStyle;
+  }
+
+  bool _isFilled(int i) {
+    return textController[i].text.length >= 1
+        ? widget.filledAfterTextChange
+        : widget.filled;
+  }
+
   Widget textFieldFill(
       {ValueChanged onTextChange,
       FocusNode focusNode,
       TextEditingController textEditingController,
-      InputBorder border}) {
-    return TextFormField(
-        focusNode: focusNode,
-        autofocus: true,
-        maxLength: 1,
-        showCursor: false,
-        enableInteractiveSelection: false,
-        textAlign: TextAlign.center,
-        style: widget.textStyle,
-        decoration: InputDecoration(
-            labelStyle: TextStyle(fontSize: 32),
-            filled: widget.filled,
-            border: border,
-            fillColor: widget.filledColor,
-            isDense: true,
-            counterText: ""),
-        keyboardType: TextInputType.phone,
-        onChanged: onTextChange,
-        controller: textEditingController,
-        inputFormatters: <TextInputFormatter>[
-          WhitelistingTextInputFormatter.digitsOnly
-        ]);
+      InputBorder border,
+      bool isFilled}) {
+    return SizedBox(
+      child: TextFormField(
+          focusNode: focusNode,
+          autofocus: true,
+          maxLength: 1,
+          showCursor: false,
+          scrollPadding: EdgeInsets.all(0),
+          cursorWidth: 0,
+          enableInteractiveSelection: false,
+          autocorrect: false,
+          textAlign: TextAlign.center,
+          style: widget.textStyle,
+          decoration: InputDecoration(
+              filled: isFilled,
+              border: border,
+              fillColor: widget.filledColor,
+              isDense: true,
+              counterText: ""),
+          keyboardType: TextInputType.phone,
+          onChanged: onTextChange,
+          controller: textEditingController,
+          inputFormatters: <TextInputFormatter>[
+            WhitelistingTextInputFormatter.digitsOnly
+          ]),
+    );
   }
 }
 

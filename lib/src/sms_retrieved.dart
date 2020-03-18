@@ -7,11 +7,6 @@ class SmsRetrieved {
   static const MethodChannel _channel =
       const MethodChannel('sms_otp_auto_verify');
 
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
-
   static Future<String> startListeningSms() async {
     if (Platform.isAndroid) {
       try {
