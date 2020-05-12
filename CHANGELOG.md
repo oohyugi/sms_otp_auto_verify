@@ -1,3 +1,7 @@
+## 1.2.2
+
+* Fix remove code
+
 ## 1.2.1
 
 * Custom TextFromField
