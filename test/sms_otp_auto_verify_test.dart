@@ -18,6 +18,6 @@ void main() {
   });
 
   test('getPlatformVersion', () async {
-    expect(await SmsRetrieved.platformVersion, '42');
+    expect(await SmsRetrieved.getAppSignature(), '42');
   });
 }

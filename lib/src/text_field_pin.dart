@@ -248,7 +248,7 @@ class _TextFieldPinState extends State<TextFieldPin> {
           onChanged: onTextChange,
           controller: textEditingController,
           inputFormatters: <TextInputFormatter>[
-            WhitelistingTextInputFormatter.digitsOnly
+            FilteringTextInputFormatter.digitsOnly
           ]),
     );
   }
