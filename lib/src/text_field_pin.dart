@@ -12,24 +12,22 @@ class TextFieldPin extends StatefulWidget {
   final bool filled;
   final int codeLength;
   final filledColor;
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
   final double margin;
-  final InputBorder borderStyeAfterTextChange;
+  final InputBorder? borderStyeAfterTextChange;
   final bool filledAfterTextChange;
 
   TextFieldPin(
-      {Key key,
-      this.onOtpCallback,
+      {required this.onOtpCallback,
       this.boxSize = 46,
-      this.borderStyle,
+      required this.borderStyle,
       this.filled = false,
       this.filledColor = Colors.grey,
       this.codeLength = 5,
       this.textStyle,
       this.margin = 16,
       this.borderStyeAfterTextChange,
-      this.filledAfterTextChange = false})
-      : super(key: key);
+      this.filledAfterTextChange = false});
 
   @override
   State<StatefulWidget> createState() {
@@ -38,18 +36,16 @@ class TextFieldPin extends StatefulWidget {
 }
 
 class _TextFieldPinState extends State<TextFieldPin> {
-  _TextFieldPinState();
+  late List<FocusNode> focusNode = [];
+  late List<TextEditingController> textController= [];
 
-  List<FocusNode> focusNode = List();
-  List<TextEditingController> textController = List();
-
-  List<OtpDefaultData> mListOtpData = List();
+  List<OtpDefaultData> mListOtpData  =[];
   HashMap<int, String> mapResult = HashMap();
 
   String _smsCode = "";
   int _nextFocus = 1;
   String _result = "";
-  InputBorder _borderAfterTextChange;
+  late InputBorder _borderAfterTextChange;
 
   @override
   void dispose() {
@@ -67,12 +63,13 @@ class _TextFieldPinState extends State<TextFieldPin> {
     _setDefaultTextFieldData();
 
     _startListeningOtpCode();
+
     if (widget.borderStyeAfterTextChange == null) {
       _borderAfterTextChange = OutlineInputBorder(
           borderRadius: BorderRadius.circular(32),
           borderSide: BorderSide(color: Colors.grey, width: 1));
     } else {
-      _borderAfterTextChange = widget.borderStyeAfterTextChange;
+      _borderAfterTextChange = widget.borderStyeAfterTextChange!;
     }
   }
 
@@ -86,7 +83,7 @@ class _TextFieldPinState extends State<TextFieldPin> {
 
   /// listen sms
   _startListeningOtpCode() async {
-    String smsCode = await SmsRetrieved.startListeningSms();
+    String? smsCode = await SmsRetrieved.startListeningSms();
 
     _smsCode = getCode(smsCode);
 
@@ -117,7 +114,7 @@ class _TextFieldPinState extends State<TextFieldPin> {
   }
 
   /// get number from message ex: your code : 45678 blablabla blabla
-  getCode(String sms) {
+  getCode(String? sms) {
     if (sms != null) {
       final intRegex = RegExp(r'\d+', multiLine: true);
       final code = intRegex.allMatches(sms).first.group(0);
@@ -147,7 +144,7 @@ class _TextFieldPinState extends State<TextFieldPin> {
 
   @override
   Widget build(BuildContext context) {
-    InputBorder _border = widget.borderStyle;
+    InputBorder? _border = widget.borderStyle;
 
     if (_border == null) {
       _border = OutlineInputBorder(
@@ -188,7 +185,7 @@ class _TextFieldPinState extends State<TextFieldPin> {
                           FocusScope.of(context)
                               .requestFocus(focusNode[_nextFocus]);
                         } else {
-                          _nextFocus = (mListOtpData.length-1) - 1;
+                          _nextFocus = (mListOtpData.length - 1) - 1;
                         }
                       } else {
                         if (i >= 1) {
@@ -209,9 +206,11 @@ class _TextFieldPinState extends State<TextFieldPin> {
   }
 
   InputBorder _getBorder(int i) {
-    return textController[i].text.length >= 1
-        ? _borderAfterTextChange
-        : widget.borderStyle;
+    if (textController[i].text.length >= 1) {
+      return _borderAfterTextChange;
+    } else {
+      return widget.borderStyle;
+    }
   }
 
   bool _isFilled(int i) {
@@ -221,11 +220,11 @@ class _TextFieldPinState extends State<TextFieldPin> {
   }
 
   Widget textFieldFill(
-      {ValueChanged onTextChange,
-      FocusNode focusNode,
-      TextEditingController textEditingController,
-      InputBorder border,
-      bool isFilled}) {
+      {required ValueChanged onTextChange,
+      required FocusNode focusNode,
+      required TextEditingController textEditingController,
+      required InputBorder border,
+      required bool isFilled}) {
     return SizedBox(
       child: TextFormField(
           focusNode: focusNode,
@@ -255,7 +254,7 @@ class _TextFieldPinState extends State<TextFieldPin> {
 }
 
 class OtpDefaultData {
-  String code;
+  String? code;
 
   OtpDefaultData(this.code);
 }

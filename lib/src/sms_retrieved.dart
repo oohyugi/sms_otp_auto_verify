@@ -7,7 +7,7 @@ class SmsRetrieved {
   static const MethodChannel _channel =
       const MethodChannel('sms_otp_auto_verify');
 
-  static Future<String> startListeningSms() async {
+  static Future<String?> startListeningSms() async {
     if (Platform.isAndroid) {
       try {
         final String result = await _channel.invokeMethod('startListening');
@@ -21,7 +21,7 @@ class SmsRetrieved {
     }
   }
 
-  static Future<String> stopListening() async {
+  static Future<String?> stopListening() async {
     if (Platform.isAndroid) {
       final String smsCode = await _channel.invokeMethod('stopListening');
       return smsCode;
@@ -30,7 +30,7 @@ class SmsRetrieved {
     }
   }
 
-  static Future<String> getAppSignature() async {
+  static Future<String?> getAppSignature() async {
     if (Platform.isAndroid) {
       final String signatureCode =
           await _channel.invokeMethod('getAppSignature');
