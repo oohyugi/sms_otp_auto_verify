@@ -1,6 +1,7 @@
 ## 2.0.0
 
 * support the Android V2 embedding
+* safe nullable
 
 ## 1.2.2
 
