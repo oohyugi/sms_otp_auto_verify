@@ -6,6 +6,8 @@ homepage: https://github.com/oohyugi/sms_otp_auto_verify
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
+  flutter: ">=1.12.0"
+
 
 dependencies:
   flutter:
