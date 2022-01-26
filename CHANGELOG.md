@@ -1,3 +1,7 @@
+## 2.0.0
+
+* support the Android V2 embedding
+
 ## 1.2.2
 
 * Fix remove code
