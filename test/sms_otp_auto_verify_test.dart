@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sms_otp_auto_verify/src/sms_retrieved.dart';
+import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
 
 void main() {
   const MethodChannel channel = MethodChannel('sms_otp_auto_verify');
@@ -18,6 +18,6 @@ void main() {
   });
 
   test('getPlatformVersion', () async {
-    expect(await SmsRetrieved.getAppSignature(), '42');
+    expect(await SmsVerification.getAppSignature(), '42');
   });
 }

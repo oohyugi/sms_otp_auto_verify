@@ -95,7 +95,7 @@ class SmsOtpAutoVerifyPlugin : FlutterPlugin, MethodCallHandler,
 
             }
             "stopListening" -> {
-                alreadyCalledSmsRetrieve = false
+                pendingResult = null
                 unregister()
             }
 
@@ -145,6 +145,7 @@ class SmsOtpAutoVerifyPlugin : FlutterPlugin, MethodCallHandler,
         val task = client?.startSmsRetriever()
         task?.addOnSuccessListener {
             // Successfully started retriever, expect broadcast intent
+            unregister()
             Log.e(javaClass::getSimpleName.name, "task started")
             receiver?.setSmsListener(this)
             activity?.registerReceiver(
@@ -158,8 +159,14 @@ class SmsOtpAutoVerifyPlugin : FlutterPlugin, MethodCallHandler,
     }
 
     private fun unregister() {
-        receiver?.let {
-            activity?.unregisterReceiver(receiver)
+        alreadyCalledSmsRetrieve = false
+        if (receiver!=null){
+            try {
+                activity?.unregisterReceiver(receiver)
+                Log.d(javaClass::getSimpleName.name, "task stoped")
+                receiver = null
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -168,16 +175,14 @@ class SmsOtpAutoVerifyPlugin : FlutterPlugin, MethodCallHandler,
             if (!alreadyCalledSmsRetrieve) {
                 pendingResult?.success(it)
                 alreadyCalledSmsRetrieve = true
+            }else{
+                Log.d( "onOtpReceived: ", "already called")
             }
         }
 
     }
 
     override fun onOtpTimeout() {
-        if (!alreadyCalledSmsRetrieve) {
-            pendingResult?.error("Time out", "Request otp code timeout", null)
-            alreadyCalledSmsRetrieve = true
-        }
     }
 
 

@@ -13,20 +13,30 @@ import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
 ```
 ### Get Signature Code
 ```dart
-  String signature = await SmsRetrieved.getAppSignature();
+String? signature = await SmsVerification.getAppSignature();
 ```
 ### Add Widget
 codeLength must equals with Sms OTP Code length
 
 ```dart
 TextFieldPin(
-                  filled: true,
-                  filledColor: Colors.grey[100],
-                  codeLength: _otpCodeLength,
-                  boxSize: 48,
-                  onOtpCallback: (code, isAutofill) =>
-                      _onOtpCallBack(code, isAutofill),
-                )
+    textController: textEditingController,
+    autoFocus: true,
+    codeLength: _otpCodeLength,
+    alignment: MainAxisAlignment.center,
+    defaultBoxSize: 46.0,
+    margin: 10,
+    selectedBoxSize: 46.0,
+    textStyle: TextStyle(fontSize: 16),
+    defaultDecoration: _pinPutDecoration.copyWith(
+    border: Border.all(
+    color: Theme.of(context)
+    .primaryColor
+        .withOpacity(0.6))),
+    selectedDecoration: _pinPutDecoration,
+    onChange: (code) {
+    _onOtpCallBack(code,false);
+}),
 ```
 
 ### Listen result from OtpListTextField

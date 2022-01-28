@@ -4,7 +4,6 @@
     <application>
         <receiver
             android:name=".SmsBroadcastReceiver"
-            android:enabled="true"
             android:exported="true"
             android:permission="com.google.android.gms.auth.api.phone.permission.SEND">
             <intent-filter>

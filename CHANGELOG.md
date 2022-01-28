@@ -1,3 +1,9 @@
+## 2.1.0
+
+* Change text field pin
+* Now, can start listen sms by yourself
+* Can stop listen sms by yourself
+* Simplify code
 ## 2.0.0
 
 * support the Android V2 embedding

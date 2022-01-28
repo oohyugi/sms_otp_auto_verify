@@ -1,260 +1,125 @@
-import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sms_otp_auto_verify/src/sms_retrieved.dart';
 
-///your listData length must be equals otp code length.
 
-class TextFieldPin extends StatefulWidget {
-  final Function(String, bool) onOtpCallback;
-  final double boxSize;
-  final InputBorder borderStyle;
-  final bool filled;
+class TextFieldPin extends StatelessWidget {
+
+  final Function(String) onChange;
+  final double defaultBoxSize;
+  final double selectedBoxSize;
+  final BoxDecoration? defaultDecoration;
   final int codeLength;
-  final filledColor;
   final TextStyle? textStyle;
   final double margin;
-  final InputBorder? borderStyeAfterTextChange;
-  final bool filledAfterTextChange;
+  final BoxDecoration? selectedDecoration;
+  final bool autoFocus;
+  final MainAxisAlignment alignment;
+  final TextEditingController textController;
 
-  TextFieldPin(
-      {required this.onOtpCallback,
-      this.boxSize = 46,
-      required this.borderStyle,
-      this.filled = false,
-      this.filledColor = Colors.grey,
-      this.codeLength = 5,
-      this.textStyle,
-      this.margin = 16,
-      this.borderStyeAfterTextChange,
-      this.filledAfterTextChange = false});
+  TextFieldPin({
+    required this.onChange,
+    required this.defaultBoxSize,
+    defaultDecoration,
+    selectedBoxSize,
+    this.codeLength = 5,
+    this.textStyle,
+    this.margin = 16.0,
+    this.selectedDecoration,
+    this.autoFocus = false,
+    this.alignment = MainAxisAlignment.center, textController,
+  })  : this.textController =textController?? new TextEditingController(),this.selectedBoxSize = selectedBoxSize ?? defaultBoxSize,
+        this.defaultDecoration = defaultDecoration ??
+            BoxDecoration(
+              border: Border.all(color: Colors.black),
+            );
 
-  @override
-  State<StatefulWidget> createState() {
-    return _TextFieldPinState();
-  }
-}
-
-class _TextFieldPinState extends State<TextFieldPin> {
-  late List<FocusNode> focusNode = [];
-  late List<TextEditingController> textController= [];
-
-  List<OtpDefaultData> mListOtpData  =[];
-  HashMap<int, String> mapResult = HashMap();
-
-  String _smsCode = "";
-  int _nextFocus = 1;
-  String _result = "";
-  late InputBorder _borderAfterTextChange;
-
-  @override
-  void dispose() {
-    super.dispose();
-    for (int i = 0; i < mListOtpData.length; i++) {
-      textController[i].dispose();
+  List<Widget> getField() {
+    final List<Widget> result = <Widget>[];
+    for (int i = 1; i <= codeLength; i++) {
+      result.add(Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: margin,
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: <Widget>[
+            textController.text.length <= i - 1
+                ? Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                        height: defaultBoxSize,
+                        width: defaultBoxSize,
+                        decoration: defaultDecoration),
+                  )
+                : Container(),
+            textController.text.length >= i
+                ? Container(
+                    decoration: selectedDecoration,
+                    width: selectedBoxSize,
+                    height: selectedBoxSize,
+                    child: Center(
+                      child: Text(
+                        textController.text[i - 1],
+                        style: textStyle,
+                      ),
+                    ),
+                  )
+                : Container(),
+          ],
+        ),
+      ));
     }
-    SmsRetrieved.stopListening();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    _setDefaultTextFieldData();
-
-    _startListeningOtpCode();
-
-    if (widget.borderStyeAfterTextChange == null) {
-      _borderAfterTextChange = OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32),
-          borderSide: BorderSide(color: Colors.grey, width: 1));
-    } else {
-      _borderAfterTextChange = widget.borderStyeAfterTextChange!;
-    }
-  }
-
-  void _setDefaultTextFieldData() {
-    for (int i = 0; i < widget.codeLength; i++) {
-      mListOtpData.add(OtpDefaultData(null));
-      focusNode.add(new FocusNode());
-      textController.add(new TextEditingController());
-    }
-  }
-
-  /// listen sms
-  _startListeningOtpCode() async {
-    String? smsCode = await SmsRetrieved.startListeningSms();
-
-    _smsCode = getCode(smsCode);
-
-    setState(() {
-      _autoFillCode();
-    });
-  }
-
-  /// auto fill code
-  /// clear first list otp data
-  /// clear textController
-  /// add listOtpData from smsCode value
-  _autoFillCode() {
-    if (_smsCode != null) {
-      mListOtpData.clear();
-      textController.clear();
-      focusNode.clear();
-      List<String> arrCode = _smsCode.split("");
-      for (int i = 0; i < arrCode.length; i++) {
-        mListOtpData.add(OtpDefaultData(arrCode[i]));
-        focusNode.add(new FocusNode());
-        textController
-            .add(new TextEditingController(text: mListOtpData[i].code));
-
-        _otpNumberCallback(i, true);
-      }
-    }
-  }
-
-  /// get number from message ex: your code : 45678 blablabla blabla
-  getCode(String? sms) {
-    if (sms != null) {
-      final intRegex = RegExp(r'\d+', multiLine: true);
-      final code = intRegex.allMatches(sms).first.group(0);
-
-      return code;
-    }
-    return null;
-  }
-
-  /// get value from textController
-  /// check if value already in hashmap ? update value : insert value
-  /// convert all values hasmap to string, set as result otp
-  _otpNumberCallback(int i, bool isAutoFill) {
-    if (mapResult.containsKey(i)) {
-      mapResult.update(i, (e) => textController[i].text);
-    } else {
-      mapResult.putIfAbsent(i, () => textController[i].text);
-    }
-    _result = mapResult.values
-        .toString()
-        .replaceAll("(", "")
-        .replaceAll(")", "")
-        .replaceAll(",", "")
-        .replaceAll(" ", "");
-    widget.onOtpCallback(_result, isAutoFill);
+    return result;
   }
 
   @override
   Widget build(BuildContext context) {
-    InputBorder? _border = widget.borderStyle;
-
-    if (_border == null) {
-      _border = OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(
-          color: Colors.grey,
-          width: 1.0,
-        ),
-      );
-    }
-
-    return Container(
-      height: widget.boxSize,
-      width: MediaQuery.of(context).size.width,
-      child: Center(
-        child: ListView.builder(
-            itemCount: mListOtpData.length,
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemBuilder: (context, i) {
-              return Container(
-                width: widget.boxSize,
-                height: widget.boxSize,
-                margin: EdgeInsets.only(
-                    right: i != mListOtpData.length - 1 ? widget.margin : 0),
-                child: Center(
-                  child: textFieldFill(
-                    focusNode: focusNode[i],
-                    textEditingController: textController[i],
-                    border: _getBorder(i),
-                    isFilled: _isFilled(i),
-                    onTextChange: (value) {
-                      _otpNumberCallback(i, false);
-
-                      if (value.toString().length > 0) {
-                        if (_nextFocus != mListOtpData.length) {
-                          _nextFocus = i + 1;
-                          FocusScope.of(context)
-                              .requestFocus(focusNode[_nextFocus]);
-                        } else {
-                          _nextFocus = (mListOtpData.length - 1) - 1;
-                        }
-                      } else {
-                        if (i >= 1) {
-                          _nextFocus = i - 1;
-                          FocusScope.of(context)
-                              .requestFocus(focusNode[_nextFocus]);
-                        } else {
-                          _nextFocus = 1;
-                        }
-                      }
-                    },
-                  ),
-                ),
-              );
-            }),
+    return Center(
+      child: Stack(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: defaultBoxSize >= selectedBoxSize
+                ? defaultBoxSize
+                : selectedBoxSize,
+            child: Row(
+              mainAxisAlignment: alignment,
+              children: getField(),
+            ),
+          ),
+          defaultTextField(),
+        ],
       ),
     );
   }
 
-  InputBorder _getBorder(int i) {
-    if (textController[i].text.length >= 1) {
-      return _borderAfterTextChange;
-    } else {
-      return widget.borderStyle;
-    }
-  }
-
-  bool _isFilled(int i) {
-    return textController[i].text.length >= 1
-        ? widget.filledAfterTextChange
-        : widget.filled;
-  }
-
-  Widget textFieldFill(
-      {required ValueChanged onTextChange,
-      required FocusNode focusNode,
-      required TextEditingController textEditingController,
-      required InputBorder border,
-      required bool isFilled}) {
-    return SizedBox(
-      child: TextFormField(
-          focusNode: focusNode,
-          autofocus: true,
-          maxLength: 1,
-          showCursor: false,
-          scrollPadding: EdgeInsets.all(0),
-          cursorWidth: 0,
-          enableInteractiveSelection: false,
-          autocorrect: false,
-          textAlign: TextAlign.center,
-          style: widget.textStyle,
-          decoration: InputDecoration(
-              filled: isFilled,
-              border: border,
-              fillColor: widget.filledColor,
-              isDense: true,
-              counterText: ""),
-          keyboardType: TextInputType.phone,
-          onChanged: onTextChange,
-          controller: textEditingController,
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.digitsOnly
-          ]),
+  Widget defaultTextField() {
+    return Opacity(
+      opacity: 0.0,
+      child: TextField(
+        maxLength: codeLength,
+        showCursor: false,
+        enableSuggestions: false,
+        autocorrect: false,
+        autofocus: autoFocus,
+        enableIMEPersonalizedLearning: false,
+        enableInteractiveSelection: false,
+        style: TextStyle(color: Colors.transparent),
+        decoration: InputDecoration(
+            fillColor: Colors.transparent,
+            counterStyle: TextStyle(color: Colors.transparent),
+            border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+            ),
+            filled: true),
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.digitsOnly
+        ],
+        keyboardType: TextInputType.phone,
+        controller: textController,
+        onChanged: onChange,
+      ),
     );
   }
-}
-
-class OtpDefaultData {
-  String? code;
-
-  OtpDefaultData(this.code);
 }

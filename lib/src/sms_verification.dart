@@ -3,7 +3,7 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart';
 
-class SmsRetrieved {
+class SmsVerification {
   static const MethodChannel _channel =
       const MethodChannel('sms_otp_auto_verify');
 
@@ -21,13 +21,8 @@ class SmsRetrieved {
     }
   }
 
-  static Future<String?> stopListening() async {
-    if (Platform.isAndroid) {
-      final String smsCode = await _channel.invokeMethod('stopListening');
-      return smsCode;
-    } else {
-      return null;
-    }
+  static Future<void> stopListening() {
+    return _channel.invokeMethod('stopListening');
   }
 
   static Future<String?> getAppSignature() async {
@@ -37,6 +32,13 @@ class SmsRetrieved {
       return signatureCode;
     } else {
       return null;
+    }
+  }
+  static getCode(String? sms,RegExp regExp ) {
+    if(sms!=null){
+     return regExp.allMatches(sms).first.group(0);
+    }else{
+      return "";
     }
   }
 }

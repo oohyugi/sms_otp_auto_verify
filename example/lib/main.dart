@@ -15,17 +15,44 @@ class _MyAppState extends State<MyApp> {
   bool _enableButton = false;
   String _otpCode = "";
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final intRegex = RegExp(r'\d+', multiLine: true);
+   TextEditingController textEditingController = new TextEditingController(text: "");
 
   @override
   void initState() {
     super.initState();
     _getSignatureCode();
+    _startListeningSms();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    SmsVerification.stopListening();
+  }
+
+  BoxDecoration get _pinPutDecoration {
+    return BoxDecoration(
+      border: Border.all(color: Theme.of(context).primaryColor),
+      borderRadius: BorderRadius.circular(15.0),
+    );
   }
 
   /// get signature code
   _getSignatureCode() async {
-    String? signature = await SmsRetrieved.getAppSignature();
+    String? signature = await SmsVerification.getAppSignature();
     print("signature $signature");
+  }
+
+  /// listen sms
+  _startListeningSms()  {
+     SmsVerification.startListeningSms().then((message) {
+      setState(() {
+        _otpCode = SmsVerification.getCode(message, intRegex);
+        textEditingController.text = _otpCode;
+        _onOtpCallBack(_otpCode, true);
+      });
+    });
   }
 
   _onSubmitOtp() {
@@ -33,6 +60,10 @@ class _MyAppState extends State<MyApp> {
       _isLoadingButton = !_isLoadingButton;
       _verifyOtpCode();
     });
+  }
+
+  _onClickRetry() {
+   _startListeningSms();
   }
 
   _onOtpCallBack(String otpCode, bool isAutofill) {
@@ -81,18 +112,23 @@ class _MyAppState extends State<MyApp> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   TextFieldPin(
-                    filled: true,
-                    filledColor: Colors.grey,
-                    codeLength: _otpCodeLength,
-                    boxSize: 46,
-                    filledAfterTextChange: false,
-                    textStyle: TextStyle(fontSize: 16),
-                    borderStyle: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(34)),
-                    onOtpCallback: (code, isAutofill) =>
-                        _onOtpCallBack(code, isAutofill),
-                  ),
+                      textController: textEditingController,
+                      autoFocus: true,
+                      codeLength: _otpCodeLength,
+                      alignment: MainAxisAlignment.center,
+                      defaultBoxSize: 46.0,
+                      margin: 10,
+                      selectedBoxSize: 46.0,
+                      textStyle: TextStyle(fontSize: 16),
+                      defaultDecoration: _pinPutDecoration.copyWith(
+                          border: Border.all(
+                              color: Theme.of(context)
+                                  .primaryColor
+                                  .withOpacity(0.6))),
+                      selectedDecoration: _pinPutDecoration,
+                      onChange: (code) {
+                        _onOtpCallBack(code,false);
+                      }),
                   SizedBox(
                     height: 32,
                   ),
@@ -103,6 +139,16 @@ class _MyAppState extends State<MyApp> {
                       child: _setUpButtonChild(),
                       color: Colors.blue,
                       disabledColor: Colors.blue[100],
+                    ),
+                  ),
+                  Container(
+                    width: double.maxFinite,
+                    child: TextButton(
+                      onPressed: _onClickRetry,
+                      child: Text(
+                        "Retry",
+                        style: TextStyle(color: Colors.orange),
+                      ),
                     ),
                   )
                 ],

@@ -1,7 +1,7 @@
 name: sms_otp_auto_verify
 description: A new Flutter plugin to enter a digit code usually in cases of Sms Otp Code. and provide SMS Auto Fill using library SMS Retriever API.
 
-version: 2.0.0
+version: 2.1.0
 homepage: https://github.com/oohyugi/sms_otp_auto_verify
 
 environment:
