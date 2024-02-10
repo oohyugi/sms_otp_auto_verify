@@ -16,7 +16,8 @@ class _MyAppState extends State<MyApp> {
   String _otpCode = "";
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final intRegex = RegExp(r'\d+', multiLine: true);
-   TextEditingController textEditingController = new TextEditingController(text: "");
+  TextEditingController textEditingController =
+      new TextEditingController(text: "");
 
   @override
   void initState() {
@@ -45,8 +46,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   /// listen sms
-  _startListeningSms()  {
-     SmsVerification.startListeningSms().then((message) {
+  _startListeningSms() {
+    SmsVerification.startListeningSms().then((message) {
       setState(() {
         _otpCode = SmsVerification.getCode(message, intRegex);
         textEditingController.text = _otpCode;
@@ -63,7 +64,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   _onClickRetry() {
-   _startListeningSms();
+    _startListeningSms();
   }
 
   _onOtpCallBack(String otpCode, bool isAutofill) {
@@ -90,7 +91,7 @@ class _MyAppState extends State<MyApp> {
         _enableButton = false;
       });
 
-      _scaffoldKey.currentState?.showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Verification OTP Code $_otpCode Success")));
     });
   }
@@ -127,7 +128,7 @@ class _MyAppState extends State<MyApp> {
                                   .withOpacity(0.6))),
                       selectedDecoration: _pinPutDecoration,
                       onChange: (code) {
-                        _onOtpCallBack(code,false);
+                        _onOtpCallBack(code, false);
                       }),
                   SizedBox(
                     height: 32,
