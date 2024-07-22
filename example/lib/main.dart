@@ -90,7 +90,7 @@ class _MyAppState extends State<MyApp> {
         _enableButton = false;
       });
 
-      _scaffoldKey.currentState?.showSnackBar(
+       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Verification OTP Code $_otpCode Success")));
     });
   }

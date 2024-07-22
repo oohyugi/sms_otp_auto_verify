@@ -7,6 +7,7 @@ import android.content.Intent
 
 import android.content.IntentFilter
 import android.content.IntentSender
+import android.os.Build
 import android.telephony.TelephonyManager
 import android.util.Log
 import com.google.android.gms.auth.api.credentials.Credential
@@ -148,10 +149,13 @@ class SmsOtpAutoVerifyPlugin : FlutterPlugin, MethodCallHandler,
             unregister()
             Log.e(javaClass::getSimpleName.name, "task started")
             receiver?.setSmsListener(this)
-            activity?.registerReceiver(
-                receiver,
-                IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
-            )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                activity?.registerReceiver(receiver, IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION),
+                    Context.RECEIVER_EXPORTED)
+            }
+            else {
+                activity?.registerReceiver(receiver, IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION))
+            }
 
         }
 
