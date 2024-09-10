@@ -1,9 +1,10 @@
 name: sms_otp_auto_verify_example
 description: Demonstrates how to use the sms_otp_auto_verify plugin.
-publish_to: 'none'
+publish_to: "none"
 
 environment:
   sdk: '>=2.12.6 <3.0.0'
+
 
 dependencies:
   flutter:
@@ -25,7 +26,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

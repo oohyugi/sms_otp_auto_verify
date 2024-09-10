@@ -150,6 +150,7 @@ class SmsOtpAutoVerifyPlugin : FlutterPlugin, MethodCallHandler,
             Log.e(javaClass::getSimpleName.name, "task started")
             receiver?.setSmsListener(this)
 
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 activity?.registerReceiver(receiver, IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION),
                     Context.RECEIVER_EXPORTED)
