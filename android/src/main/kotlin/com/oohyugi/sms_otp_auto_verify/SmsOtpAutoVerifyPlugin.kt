@@ -23,8 +23,6 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.PluginRegistry
 import com.google.android.gms.auth.api.credentials.Credentials
 import com.google.android.gms.auth.api.credentials.HintRequest
-import io.flutter.plugin.common.PluginRegistry.Registrar
-
 
 /** SmsOtpAutoVerifyPlugin */
 class SmsOtpAutoVerifyPlugin : FlutterPlugin, MethodCallHandler,
